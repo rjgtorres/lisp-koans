@@ -12,13 +12,28 @@
 ;;   See the License for the specific language governing permissions and
 ;;   limitations under the License.
 
+(define-condition triangle-error  (error) ())
 
 "you need to write the triangle method"
 
-(define-condition triangle-error  (error) ())
+(defun biggerzero (l)
+  (if (null l)
+      t
+    (if (> (first l) 0)
+	(biggerzero (rest l))
+      nil)))
+
+(defun triangle-inequality (a b c)
+  (or (>= c (+ a b)) (>= b (+ a c)) (>= a (+ b c))))
 
 (defun triangle (a b c)
-  :write-me)
+  (if (and (not (triangle-inequality a b c)) (biggerzero (list a b c)))
+      (cond ((apply #'= (list a b c)) :equilateral)
+	    ((or (= a b)
+		 (= b c)
+		 (= a c)) :isosceles)
+	    (t :scalene))
+      (make-condition 'triangle-error)))
 
 
 (define-test test-equilateral-triangles-have-equal-sides

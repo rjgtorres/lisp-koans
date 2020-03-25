@@ -48,10 +48,27 @@
 ; More scoring examples are given in the tests below:
 ;
 ; Your goal is to write the score method.
+(defparameter *one* 100)
+(defparameter *five* 50)
+(defparameter *tripleone* 1000)
+
+(defun roll()
+  (1+ (random 6)))
+
+(defun fulltoss()
+  (list (roll) (roll) (roll) (roll) (roll)))
 
 (defun score (dice)
-  ; You need to write this method
-)
+  (let ((soma 0) (tmp 0))
+    (dotimes (i 6)
+      (setf tmp (count-if #'(lambda (x) (= x (1+ i))) dice))
+      (incf soma (cond ((>= tmp 3) (cond ((= (1+ i) 1) (+ *tripleone* (* (- tmp 3) *one*)))
+					    ((= (1+ i) 5) (+ (* 5 *one*) (* (- tmp 3) *five*)))
+					    (t (* *one* (1+ i)))))
+		       ((= (1+ i) 1) (* tmp *one*))
+		       ((= (1+ i) 5) (* tmp *five*))
+		       (t 0))))
+    soma))
 
 (define-test test-score-of-an-empty-list-is-zero
     (assert-equal 0 (score nil)))
